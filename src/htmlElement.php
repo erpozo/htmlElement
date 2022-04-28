@@ -27,6 +27,7 @@ class htmlElement{
 
     /**
      * Devuelve el tagName del elemento HTML
+     * @return string
      */
     public function getTagName(){
         return $this->tagName;
@@ -34,6 +35,7 @@ class htmlElement{
 
     /**
      * Devuelve el atribute del elemento HTML
+     * @return array|null
      */
     public function getAtribute(){
         return $this->atribute;
@@ -41,6 +43,7 @@ class htmlElement{
 
     /**
      * Devuelve el content del elemento HTML
+     * @return array|null
      */
     public function getContent(){
         return $this->content;
@@ -48,6 +51,7 @@ class htmlElement{
 
     /**
      * Devuelve isEmpy del elemento HTML
+     *  @return bool
      */    
     public function getIsEmpy(){
         return $this->isEmpy;
