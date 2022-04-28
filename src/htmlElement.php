@@ -85,7 +85,6 @@ class htmlElement{
         unset($this->atribute[$atributeName]);
     }
 
-    public function gotAtributes(){}
 
     /**
      * Compara el tagName de la etiqueta HTML
@@ -102,7 +101,7 @@ class htmlElement{
      * @return string
      */
     public function getHtml(){
-        return "<".$this->tagName.$this->whiteAtribute().">".$this->whiteContent().$this->whiteCloseTag();
+        return "<".$this->tagName.$this->whiteAtribute.">".$this->whiteContent().$this->whiteCloseTag();
     }
 
     /**
@@ -123,7 +122,7 @@ class htmlElement{
      */
     private function whiteContent(){'"'.
         $whiteContent = "";
-        if($this->content==null)return "";
+        if($this->content==null)return $whiteContent;
         foreach($this->content as $value){
             if(is_object($value)){
                 if(get_class($value)=="htmlElement") $whiteContent .= $value->getHTML();
