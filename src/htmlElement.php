@@ -81,9 +81,11 @@ class htmlElement{
      * @param string $atributeName
      * Nombre del atributo a eliminar
      */
-    public function removeAttibute(string $atributeName){
+    public function removeAtribute(string $atributeName){
         unset($this->atribute[$atributeName]);
     }
+
+    public function gotAtributes(){}
 
     /**
      * Compara el tagName de la etiqueta HTML

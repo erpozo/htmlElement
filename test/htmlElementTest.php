@@ -60,7 +60,7 @@ final class htmlElementTest extends TestCase{
     
     public function testremoveAttribute(){
         $p = new htmlElement("p",["class"=>"texto","id"=>"parrafo1"],["Este parrafo tiene texto"],false);
-        $p->removeAttibute("class");
+        $p->removeAtribute("class");
         $resultado1='<p id="parrafo1">Este parrafo tiene texto</p>';
         $this->assertEquals($resultado1,$p->getHtml());
     }
