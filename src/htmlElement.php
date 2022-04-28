@@ -12,7 +12,7 @@ class htmlElement{
      * Nombre de etiqueta HTML
      * @param array|null $atribute
      * Array asociativo de atributos
-     * @param array|null $content
+     * @param array|null|htmlElement $content
      * Contenido de la etiqueta
      * @param bool $isEmpy
      * Indica si es una etiqueta vacia
@@ -43,7 +43,7 @@ class htmlElement{
 
     /**
      * Devuelve el content del elemento HTML
-     * @return array|null
+     * @return array|null|htmlElement
      */
     public function getContent(){
         return $this->content;
@@ -101,7 +101,7 @@ class htmlElement{
      * @return string
      */
     public function getHtml(){
-        return "<".$this->tagName.$this->whiteAtribute.">".$this->whiteContent().$this->whiteCloseTag();
+        return "<".$this->tagName.$this->whiteAtribute().">".$this->whiteContent().$this->whiteCloseTag();
     }
 
     /**
