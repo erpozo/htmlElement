@@ -124,9 +124,10 @@ class htmlElement{
         $whiteContent = "";
         if($this->content==null)return $whiteContent;
         foreach($this->content as $value){
-            if(is_object($value)){
-                if(get_class($value)=="htmlElement") $whiteContent .= $value->getHTML();
-            }else{
+            if(is_object($value) && get_class($value)=="htmlElement"){
+                $whiteContent .= $value->getHTML();
+            }
+            elseif(is_string($value)){
                 $whiteContent .= $value;
             }
         }
