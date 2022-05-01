@@ -4,7 +4,7 @@ class htmlElement{
     private string $tagName;
     private array|null $atribute;
     private array|null $content;
-    private bool $isEmpy;
+    private bool $isEmpty;
 
 
     /**
@@ -14,15 +14,15 @@ class htmlElement{
      * Array asociativo de atributos
      * @param array|null|htmlElement $content
      * Contenido de la etiqueta
-     * @param bool $isEmpy
+     * @param bool $isEmpty
      * Indica si es una etiqueta vacia
      */
-    public function __construct(string $tagName, array|null $atribute=null, array|null $content=null, bool $isEmpy=true)
+    public function __construct(string $tagName, array|null $atribute=null, array|null $content=null, bool $isEmpty=true)
     {
         $this->tagName = $tagName;
         $this->atribute = $atribute;
-        $this->content = $isEmpy?null:$content;
-        $this->isEmpy = $isEmpy;
+        $this->content = $isEmpty?null:$content;
+        $this->isEmpty = $isEmpty;
     }
 
     /**
@@ -50,11 +50,11 @@ class htmlElement{
     }
 
     /**
-     * Devuelve isEmpy del elemento HTML
+     * Devuelve isEmpty del elemento HTML
      *  @return bool
      */    
-    public function getIsEmpy(){
-        return $this->isEmpy;
+    public function getisEmpty(){
+        return $this->isEmpty;
     }
 
     /**
@@ -139,6 +139,6 @@ class htmlElement{
      * @return string
      */
     private function whiteCloseTag(){
-        return $this->isEmpy?"":"</".$this->tagName.">";
+        return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }

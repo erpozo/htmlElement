@@ -36,8 +36,8 @@ final class htmlElementTest extends TestCase{
     /**
      * @dataProvider DPhtmlElementTest
      */
-    public function testToHTML($htmlText,$tagname,$atributes,$content,$isEmpy){
-        $tagObject = new htmlElement($tagname,$atributes,$content,$isEmpy);
+    public function testToHTML($htmlText,$tagname,$atributes,$content,$isEmpty){
+        $tagObject = new htmlElement($tagname,$atributes,$content,$isEmpty);
         $this->assertEquals($htmlText,$tagObject->gethtml());
     }
 
