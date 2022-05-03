@@ -2,8 +2,8 @@
 
 class htmlElement{
     private string $tagName;
-    private array|null $atribute;
-    private array|null $content;
+    private array $atribute;
+    private array $content;
     private bool $isEmpty;
 
     static $ids = [];
@@ -12,22 +12,28 @@ class htmlElement{
     /**
      * @param string $tagName
      * Nombre de etiqueta HTML
-     * @param array|null $atribute
+     * @param array $atribute
      * Array asociativo de atributos
-     * @param array|null|htmlElement $content
+     * @param array|htmlElement $content
      * Contenido de la etiqueta
      * @param bool $isEmpty
      * Indica si es una etiqueta vacia
      */
-    public function __construct(string $tagName, array|null $atribute=null, array|null $content=null, bool $isEmpty = false){
+    public function __construct(string $tagName, array $atribute=[], array $content=[]){
         $this->tagName = $tagName;
         $this->atribute = $atribute;
-        $this->content = $isEmpty?null:$content;
-        $this->isEmpty = $isEmpty;
+        $this->content = $this->validateisEmpty($tagName)?[]:$content;
+        $this->isEmpty = $this->validateisEmpty($tagName);
     }
 
     public function __clone(){
-        return new htmlElement($this->tagName,$this->atribute,$this->content,$this->isEmpty);
+        return new htmlElement($this->tagName,$this->dontCloneId(),$this->content);
+    }
+
+    private function dontCloneId(){
+        $atributes = $this->atribute;
+        unset($atributes["id"]);
+        return $atributes;
     }
 
     /**
@@ -40,7 +46,7 @@ class htmlElement{
 
     /**
      * Devuelve el atribute del elemento HTML
-     * @return array|null
+     * @return array
      */
     public function getAtribute(){
         return $this->atribute;
@@ -48,7 +54,7 @@ class htmlElement{
 
     /**
      * Devuelve el content del elemento HTML
-     * @return array|null|htmlElement
+     * @return array|htmlElement
      */
     public function getContent(){
         return $this->content;
@@ -63,11 +69,7 @@ class htmlElement{
     }
 
     private function validateisEmpty($nameTagTexted){
-        $text = true;
-        foreach(self::EMPTY_TAGS as $value){
-            $text = $text && ($nameTagTexted != $value);
-        }
-        return $text;
+        return in_array($nameTagTexted,self::EMPTY_TAGS);
     }
 
     /**
@@ -161,7 +163,7 @@ class htmlElement{
     }
 }
 
-$parrafOriginal = new htmlElement("p");
+$parrafOriginal = new htmlElement("p",["id"=>"parrafo1","class"=>"centrado"]);
 $parrafoClonado = clone $parrafOriginal;
 $parrafoClonado->addContent("Este si tiene texto");
 echo $parrafOriginal->getHtml();
