@@ -6,6 +6,8 @@ class htmlElement{
     private array|null $content;
     private bool $isEmpty;
 
+    static $ids = [];
+    const EMPTY_TAGS = ["br","hr","img","input"];
 
     /**
      * @param string $tagName
@@ -17,12 +19,15 @@ class htmlElement{
      * @param bool $isEmpty
      * Indica si es una etiqueta vacia
      */
-    public function __construct(string $tagName, array|null $atribute=null, array|null $content=null, bool $isEmpty=true)
-    {
+    public function __construct(string $tagName, array|null $atribute=null, array|null $content=null, bool $isEmpty = false){
         $this->tagName = $tagName;
         $this->atribute = $atribute;
         $this->content = $isEmpty?null:$content;
         $this->isEmpty = $isEmpty;
+    }
+
+    public function __clone(){
+        return new htmlElement($this->tagName,$this->atribute,$this->content,$this->isEmpty);
     }
 
     /**
@@ -57,6 +62,14 @@ class htmlElement{
         return $this->isEmpty;
     }
 
+    private function validateisEmpty($nameTagTexted){
+        $text = true;
+        foreach(self::EMPTY_TAGS as $value){
+            $text = $text && ($nameTagTexted != $value);
+        }
+        return $text;
+    }
+
     /**
      * Declara el contenido del elemento HTML
      * @param array|string|htmlElement $content
@@ -73,6 +86,9 @@ class htmlElement{
      * Valor del atributo
      */
     public function addAtribute(string $atributeName, string $atributeWorth){
+        if($atributeName=="id"){
+            array_push(self::$ids,$atributeWorth);
+        }
         $this->atribute[$atributeName]=$atributeWorth;
     }
 
@@ -110,8 +126,10 @@ class htmlElement{
      */
     private function whiteAtribute(){
         $whiteAtribute=" ";
-        foreach($this->atribute as $key =>$value){
+        if(is_array($this->atribute)){
+            foreach($this->atribute as $key =>$value){
             $whiteAtribute .= $value==null?"":$key . '="' . $value . '" ';
+            }
         }
         return rtrim($whiteAtribute);
     }
@@ -142,3 +160,9 @@ class htmlElement{
         return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }
+
+$parrafOriginal = new htmlElement("p");
+$parrafoClonado = clone $parrafOriginal;
+$parrafoClonado->addContent("Este si tiene texto");
+echo $parrafOriginal->getHtml();
+echo $parrafoClonado->getHtml();
