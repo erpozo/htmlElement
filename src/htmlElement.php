@@ -20,20 +20,29 @@ class htmlElement{
      * Indica si es una etiqueta vacia
      */
     public function __construct(string $tagName, array $atribute=[], array $content=[]){
+        $tagName = strtolower($tagName);
         $this->tagName = $tagName;
+        if(in_array("id",$atribute)){
+            array_push(self::$ids,$atribute["id"]);
+        }
         $this->atribute = $atribute;
         $this->content = $this->validateisEmpty($tagName)?[]:$content;
         $this->isEmpty = $this->validateisEmpty($tagName);
     }
 
     public function __clone(){
-        return new htmlElement($this->tagName,$this->dontCloneId(),$this->content);
+        return new htmlElement($this->tagName,$this->atribute,$this->content);
     }
 
-    private function dontCloneId(){
-        $atributes = $this->atribute;
-        unset($atributes["id"]);
-        return $atributes;
+    /**
+     * Valida si el tagName pertenece a una etiqueta vacia
+     * @param string $nameTagTexted
+     * Nombre del tag a validar
+     * @return bool
+     * True si pertenece a una etiqueta vacia
+     */
+    private function validateisEmpty($nameTagTexted){
+        return in_array($nameTagTexted,self::EMPTY_TAGS);
     }
 
     /**
@@ -68,10 +77,6 @@ class htmlElement{
         return $this->isEmpty;
     }
 
-    private function validateisEmpty($nameTagTexted){
-        return in_array($nameTagTexted,self::EMPTY_TAGS);
-    }
-
     /**
      * Declara el contenido del elemento HTML
      * @param array|string|htmlElement $content
@@ -88,10 +93,10 @@ class htmlElement{
      * Valor del atributo
      */
     public function addAtribute(string $atributeName, string $atributeWorth){
-        if($atributeName=="id"){
+        if(strtolower($atributeName)=="id"){
             array_push(self::$ids,$atributeWorth);
         }
-        $this->atribute[$atributeName]=$atributeWorth;
+        $this->atribute[strtolower($atributeName)]=strtolower($atributeWorth);
     }
 
     /**
@@ -100,7 +105,7 @@ class htmlElement{
      * Nombre del atributo a eliminar
      */
     public function removeAtribute(string $atributeName){
-        unset($this->atribute[$atributeName]);
+        unset($this->atribute[strtolower($atributeName)]);
     }
 
 
@@ -162,9 +167,3 @@ class htmlElement{
         return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }
-
-$parrafOriginal = new htmlElement("p",["id"=>"parrafo1","class"=>"centrado"]);
-$parrafoClonado = clone $parrafOriginal;
-$parrafoClonado->addContent("Este si tiene texto");
-echo $parrafOriginal->getHtml();
-echo $parrafoClonado->getHtml();

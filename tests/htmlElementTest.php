@@ -67,4 +67,13 @@ final class htmlElementTest extends TestCase{
         $p2 = new htmlElement("p",["class"=>"texto","id"=>"parrafo1"],["Este parrafo tiene texto"]);
         $this->assertTrue($p1->isSameTag($p2));
     }
+
+    public function testcloneElement(){
+        $parrafOriginal = new htmlElement("p",["id"=>"parrafo1","class"=>"centrado"]);
+        $parrafoClonado = clone $parrafOriginal;
+        $parrafoClonado->addContent("Este si tiene texto");
+        $resultado = $parrafOriginal->getHtml().$parrafoClonado->getHtml();
+        $esperado = '<p id="parrafo1" class="centrado"></p><p class="centrado">Este si tiene texto</p>';
+        $this->assertEquals($esperado,$resultado);
+    }
 }
