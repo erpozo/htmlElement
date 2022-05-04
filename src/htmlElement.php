@@ -6,6 +6,7 @@ class htmlElement{
     private array $content;
     private bool $isEmpty;
 
+    static $totalhtmlElement = 0;
     static $ids = [];
     const EMPTY_TAGS = ["br","hr","img","input"];
 
@@ -20,12 +21,12 @@ class htmlElement{
      * Indica si es una etiqueta vacia
      */
     public function __construct(string $tagName, array $atribute=[], array $content=[]){
+        ++self::$totalhtmlElement;
         $tagName = strtolower($tagName);
         $this->tagName = $tagName;
-        if(in_array("id",$atribute)){
-            array_push(self::$ids,$atribute["id"]);
+        foreach($atribute as $key=>$value){
+            $this->addAtribute($key,$value);
         }
-        $this->atribute = $atribute;
         $this->content = $this->validateisEmpty($tagName)?[]:$content;
         $this->isEmpty = $this->validateisEmpty($tagName);
     }
@@ -54,11 +55,16 @@ class htmlElement{
     }
 
     /**
-     * Devuelve el atribute del elemento HTML
-     * @return array
+     * Devuelve el array atributos del elemento HTML
+     * @param string $atributeName
+     * Devolvera solo el valor del atributo seleccionado
+     * @return array|string
      */
-    public function getAtribute(){
-        return $this->atribute;
+    public function getAtribute($atributeName=""){
+        if($atributeName=="")return $this->atribute;
+        foreach($this->atribute as $key=>$value){
+            if($key==$atributeName)return $value;
+        }
     }
 
     /**
@@ -105,7 +111,11 @@ class htmlElement{
      * Nombre del atributo a eliminar
      */
     public function removeAtribute(string $atributeName){
-        unset($this->atribute[strtolower($atributeName)]);
+        $atributeName = strtolower($atributeName);
+        if($atributeName=="id"){
+            unset(self::$ids[$this->getAtribute("id")]);
+        }
+        unset($this->atribute[$atributeName]);
     }
 
 
@@ -167,3 +177,15 @@ class htmlElement{
         return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }
+
+
+$parrafOriginal1 = new htmlElement("p",["class"=>"centrado"]);
+$parrafOriginal1->addAtribute("id","parrafo1");
+$parrafOriginal2 = new htmlElement("p",["class"=>"centrado"]);
+$parrafOriginal2->addAtribute("id","parrafo2");
+$parrafOriginal3 = new htmlElement("p",["class"=>"centrado"]);
+$parrafOriginal3->addAtribute("id","parrafo3");
+$parrafOriginal4 = new htmlElement("p",["id"=>"parrafo4","class"=>"centrado"]);
+print_r(htmlElement::$ids);
+$parrafOriginal3->removeAtribute("id");
+print_r(htmlElement::$ids);
