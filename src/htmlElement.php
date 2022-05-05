@@ -8,7 +8,7 @@ class htmlElement{
 
     static $totalElement = 0;
     static $ids = [];
-    const EMPTY_TAGS = ["br","hr","img","input"];
+    const EMPTY_TAGS = ["br","hr","img","input","!doctype html"];
 
     /**
      * @param string $tagName
@@ -31,12 +31,29 @@ class htmlElement{
         $this->isEmpty = $this->validateisEmpty($tagName);
     }
 
+    public static function create(string $tagName, array $atribute=[], array $content=[]){
+        return new htmlElement($tagName,$atribute,$content);
+    }
+
     public function __clone(){
         return new htmlElement($this->tagName,$this->atribute,$this->content);
     }
 
     public function __toString(){
         return $this->getHtml();
+    }
+
+    public static function createHtml5($titulo="titulo",$lang="es",$charset="UTF-8"){
+        $meta1 = self::create("meta",["charset"=>"$charset"]);
+        $meta2 = self::create("meta",["http-equiv"=>"X-UA-Compatible","content"=>"IE=edge"]);
+        $meta3 = self::create("meta",["name"=>"viewport","content"=>"width=device-width, initial-scale=1.0"]);
+        $title = self::create("title",[],["$titulo"]);
+        $body = self::create("body");
+        $head = self::create("head",[],[$meta1,$meta2,$meta3,$title]);
+        $html = self::create("html",["lang"=>"$lang"],[$head,$body]);
+        $doctype = self::create("!doctype html",[],[$html]);
+
+        return $doctype;
     }
 
     /**
@@ -189,3 +206,7 @@ class htmlElement{
         return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }
+
+$miprimerapagina = htmlElement::createHtml5("MiPrimeraPagina");
+
+echo $miprimerapagina;
