@@ -6,7 +6,7 @@ class htmlElement{
     private array $content;
     private bool $isEmpty;
 
-    static $totalhtmlElement = 0;
+    static $totalElement = 0;
     static $ids = [];
     const EMPTY_TAGS = ["br","hr","img","input"];
 
@@ -21,7 +21,7 @@ class htmlElement{
      * Indica si es una etiqueta vacia
      */
     public function __construct(string $tagName, array $atribute=[], array $content=[]){
-        ++self::$totalhtmlElement;
+        ++self::$totalElement;
         $tagName = strtolower($tagName);
         $this->tagName = $tagName;
         foreach($atribute as $key=>$value){
@@ -33,6 +33,10 @@ class htmlElement{
 
     public function __clone(){
         return new htmlElement($this->tagName,$this->atribute,$this->content);
+    }
+
+    public function __toString(){
+        return $this->getHtml();
     }
 
     /**
@@ -59,12 +63,22 @@ class htmlElement{
      * @param string $atributeName
      * Devolvera solo el valor del atributo seleccionado
      * @return array|string
+     * @throws 1 El atributo expecificado no existe
      */
     public function getAtribute($atributeName=""){
         if($atributeName=="")return $this->atribute;
         foreach($this->atribute as $key=>$value){
-            if($key==$atributeName)return $value;
+            if($key==strtolower($atributeName))return $value;
         }
+        throw new Exception("El atributo".$atributeName." no existe",1000);
+    }
+
+    /**
+     * Comprueba si el htmlElement tiene atributos
+     * @return bool
+     */
+    public function gotAtribute(){
+        return !empty($this->atribute);
     }
 
     /**
@@ -134,7 +148,7 @@ class htmlElement{
      * @return string
      */
     public function getHtml(){
-        return "<".$this->tagName.$this->whiteAtribute().">".$this->whiteContent().$this->whiteCloseTag();
+        return "<".$this->tagName.($this->gotAtribute()?$this->whiteAtribute():"").">".$this->whiteContent().$this->whiteCloseTag();
     }
 
     /**
@@ -143,10 +157,8 @@ class htmlElement{
      */
     private function whiteAtribute(){
         $whiteAtribute=" ";
-        if(is_array($this->atribute)){
-            foreach($this->atribute as $key =>$value){
-            $whiteAtribute .= $value==null?"":$key . '="' . $value . '" ';
-            }
+        foreach($this->atribute as $key =>$value){
+        $whiteAtribute .= $value==null?"":$key . '="' . $value . '" ';
         }
         return rtrim($whiteAtribute);
     }
@@ -177,15 +189,3 @@ class htmlElement{
         return $this->isEmpty?"":"</".$this->tagName.">";
     }
 }
-
-
-$parrafOriginal1 = new htmlElement("p",["class"=>"centrado"]);
-$parrafOriginal1->addAtribute("id","parrafo1");
-$parrafOriginal2 = new htmlElement("p",["class"=>"centrado"]);
-$parrafOriginal2->addAtribute("id","parrafo2");
-$parrafOriginal3 = new htmlElement("p",["class"=>"centrado"]);
-$parrafOriginal3->addAtribute("id","parrafo3");
-$parrafOriginal4 = new htmlElement("p",["id"=>"parrafo4","class"=>"centrado"]);
-print_r(htmlElement::$ids);
-$parrafOriginal3->removeAtribute("id");
-print_r(htmlElement::$ids);
