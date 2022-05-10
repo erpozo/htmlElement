@@ -8,7 +8,7 @@ class htmlElement{
 
     static $totalElement = 0;
     static $ids = [];
-    const EMPTY_TAGS = ["br","hr","img","input","!doctype html"];
+    const EMPTY_TAGS = ["br","hr","img","input"];
 
     /**
      * @param string $tagName
@@ -20,19 +20,19 @@ class htmlElement{
      * @param bool $isEmpty
      * Indica si es una etiqueta vacia
      */
-    public function __construct(string $tagName, array $atribute=[], array $content=[]){
+    public function __construct(string $tagName, array $atribute=[], array $content=[],bool $isEmpty=null){
         ++self::$totalElement;
         $tagName = strtolower($tagName);
         $this->tagName = $tagName;
         foreach($atribute as $key=>$value){
             $this->addAtribute($key,$value);
         }
-        $this->content = $this->validateisEmpty($tagName)?[]:$content;
-        $this->isEmpty = $this->validateisEmpty($tagName);
+        $this->content = ($isEmpty==null?$this->validateisEmpty($tagName):$isEmpty)?[]:$content;
+        $this->isEmpty = $isEmpty==null?$this->validateisEmpty($tagName):$isEmpty;
     }
 
-    public static function create(string $tagName, array $atribute=[], array $content=[]){
-        return new htmlElement($tagName,$atribute,$content);
+    public static function create(string $tagName, array $atribute=[], array $content=[],bool $isEmpty=null){
+        return new htmlElement($tagName,$atribute,$content,$isEmpty);
     }
 
     public function __clone(){
@@ -51,7 +51,7 @@ class htmlElement{
         $body = self::create("body");
         $head = self::create("head",[],[$meta1,$meta2,$meta3,$title]);
         $html = self::create("html",["lang"=>"$lang"],[$head,$body]);
-        $doctype = self::create("!doctype html",[],[$html]);
+        $doctype = self::create("!doctype html",[],[$html],true);
 
         return $doctype;
     }
